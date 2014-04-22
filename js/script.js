@@ -9,13 +9,14 @@ var container = {
   y: 10
 };
 var boxes = [
-  { x: 5, y: 5, w:10, h:10, c: '#333333'},
-  { x: 20, y: 5, w:10, h:10, c: '#cccccc'},
-  { x: 35, y: 5, w:10, h:10, c: '#cccccc'},
-  { x: 5, y: 50, w:30, h:20, c: '#cccccc'},
-  { x: 5, y: 150, w:100, h:100, c: '#cccccc'}
+  { x: 5, y: 5, z: 0, w:10, h:10, d: 0, c: '#333333'},
+  { x: 20, y: 5, z: 0, w:10, h:10, d: 0, c: '#cccccc'},
+  { x: 35, y: 5, z: 0, w:10, h:10, d: 0, c: '#cccccc'},
+  { x: 5, y: 50, z: 0, w:30, h:20, d: 0, c: '#cccccc'},
+  { x: 5, y: 150, z: 0, w:100, h:100, d: 0, c: '#cccccc'}
 ];
 var draw = function(c, c2, w, h){
+  motion();
   draw_2d(c,w,h);
   draw_iso(c2,w,h);
   requestAnimationFrame(function(){
@@ -33,12 +34,7 @@ var draw_2d = function(c, c2, w, h){
     c.fillRect(element.x + container.x, element.y + container.y,element.w, element.h);
   });
 };
-var draw_iso = function(c, w, h){
-  //clear
-  c.save();
-  c.scale(1,0.5);
-  c.translate(270, 200);
-  c.rotate(45 * Math.PI / 180);
+var motion = function(){
   if(right){
     boxes[0].x += 1 
   }
@@ -51,6 +47,13 @@ var draw_iso = function(c, w, h){
   if(down){
     boxes[0].y += 1 
   }
+};
+var draw_iso = function(c, w, h){
+  //clear
+  c.save();
+  c.scale(1,0.5);
+  c.translate(270, 200);
+  c.rotate(45 * Math.PI / 180);
   //draw iso container
   c.fillStyle = '#eee';
   c.fillRect(container.x, container.y,container.w, container.h);
@@ -60,6 +63,20 @@ var draw_iso = function(c, w, h){
     c.fillRect(element.x + container.x, element.y + container.y, element.w, element.h, element.w /2, (element.h /2) * -1,element.w, element.h);
   });
   c.restore();
+};
+var draw_2d = function(c, w, h){
+  //clear
+  c.fillStyle = '#333333';
+  c.fillRect(0,0,w,h);
+  // draw 2d container
+  c.fillStyle = '#eee';
+  c.fillRect(container.x, container.y,container.w, container.h);
+
+  // draw 2d tiles
+  boxes.forEach(function(element, index){
+    c.fillStyle = element.c;
+    c.fillRect(element.x + container.x, element.y + container.y,element.w, element.h);
+  });
 };
 var keyup = function(event){
   if(event.keyCode === 38 ){ up = false; }
